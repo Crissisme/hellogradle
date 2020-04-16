@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 13
+targetCompatibility = 13
+
+// find dependencies firstly from maven local address as long as GRADLE_USER_HOME=~/.m2
+// remote repositories address is at https://search.maven.org
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+// performing encoding
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+//************************ DEPENDENCIES *******************************//
+
+// usually download dependencies from company artifactory
+dependencies {
+    repositories {
+        maven {
+            url = 'https://artifactory.oraclecorp.com/maven/public'
+        }
+    }
+}
+
+dependencies {
+    // it also can be written as testCompile 'junit:junit:4.12'
+    //      which patten is 'group:name:version'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// another way for dependencies is using ',' to separate all items
+/*
+dependencies {
+    compile(
+        'junit:junit:4.12',
+        ''
+    )
+}
+*/
+
+
+//************************ TASKS *******************************//
+task performRelease {
+    doLast {
+        if (project.hasProperty("isCI")) {
+            println("Performing release actions")
+        }else {
+            throw new InvalidUserDataException("Can't perform release outside of CI")
+        }
+    }
+}
+
+def i = 10
+println i
+
